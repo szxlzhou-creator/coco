@@ -19,9 +19,10 @@ def compute_variance(budgets: List[Any], actuals: List[Any]) -> List[VarianceRep
     Compare budget vs actual amounts grouped by (period, account).
 
     Args:
-        budgets: list of Budget ORM objects (with .account relationship loaded
-                 OR account_id / account attributes available via join).
-        actuals: list of Actual ORM objects.
+        budgets: list of objects with attributes: period, account_id,
+                 budget_amount (aliased from Budget.amount), account_code,
+                 account_name, account_type.
+        actuals: list of objects with attributes: period, account_id, amount.
 
     Returns:
         Sorted list of VarianceReport instances.
@@ -65,6 +66,12 @@ def compute_forecast_accuracy(
 
     accuracy_pct = 100 - abs((forecast - actual) / actual * 100)
     Returns None when actual_amount is 0.
+
+    Args:
+        forecasts: list of objects with attributes: period, account_id,
+                   forecast_amount (aliased from Forecast.amount), account_code,
+                   account_name.
+        actuals: list of objects with attributes: period, account_id, amount.
     """
     actual_map: dict = defaultdict(float)
     for actual in actuals:
